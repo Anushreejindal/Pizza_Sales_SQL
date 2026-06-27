@@ -13,11 +13,6 @@ This project aims to analyze the transactional sales data of a pizza store using
 ## 🧾 Understanding the Dataset
 This dataset consists of four relational tables that store the transactional sales data of the pizza store along with information about the variety of pizzas it offers.
 
-```markdown
-## 📂 Dataset Understanding
-
-This dataset consists of four relational tables that store the transactional sales data of a pizza store along with information about the variety of pizzas it offers.
-
 ### 1. Orders
 This table stores information about each customer order and serves as the parent table for all transactions.
 
@@ -62,4 +57,3 @@ This table contains descriptive information about each pizza type and its ingred
 | **name** | `VARCHAR` | Name of the pizza. |
 | **category** | `VARCHAR` | Pizza category (Classic, Chicken, Supreme, Veggie, etc.). |
 | **ingredients** | `TEXT` | List of ingredients used in the pizza. |
-```
