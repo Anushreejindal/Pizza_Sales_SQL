@@ -1,0 +1,26 @@
+-- DDL COMMANDS
+
+create database pizzahut;
+use pizzahut;
+
+-- pizza_types and pizzas tables are directly created by importing the data from csv files.
+
+select*from pizza_types;
+select*from pizzas;
+
+-- Schemas are created for orders and order_details tables and then data is imported into them from csv files.
+
+create table orders(order_id int not null, 
+order_date date not null, 
+order_time time not null,
+primary key(order_id));
+
+select*from orders;
+
+create table order_details ( order_details_id INT NOT NULL,
+order_id int not null,
+pizza_id text not null, 
+quantity int not null,
+primary  key(order_details_id));
+
+select*from order_details;
