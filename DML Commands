@@ -1,0 +1,150 @@
+-- DML COMMANDS
+
+-- 1. Retrieve the total number of orders placed.
+
+SELECT 
+    COUNT(order_id) AS total_orders
+FROM
+    orders;
+
+-- 2. Calculate the total revenue generated from pizza sales.
+
+SELECT 
+    ROUND(SUM(order_details.quantity * pizzas.price),
+            2) AS total_rev
+FROM
+    order_details
+        JOIN
+    pizzas ON order_details.pizza_id = pizzas.pizza_id;
+    
+-- 3. Identify the highest-priced pizza.
+
+SELECT 
+    pizza_types.name, pizzas.price
+FROM
+    pizza_types
+        JOIN
+    pizzas ON pizza_types.pizza_type_id = pizzas.pizza_type_id
+ORDER BY pizzas.price DESC
+LIMIT 1;
+
+-- 4. Identify the most common pizza size ordered.
+
+SELECT 
+    pizzas.size,
+    COUNT(order_details.order_details_id) AS order_count
+FROM
+    pizzas
+        JOIN
+    order_details ON pizzas.pizza_id = order_details.pizza_id
+GROUP BY pizzas.size
+ORDER BY order_count DESC
+LIMIT 1;
+
+-- 5. List the top 5 most ordered pizza types along with their quantities.
+
+SELECT 
+    pt.pizza_type_id, pt.name, SUM(od.quantity) quant
+FROM
+    order_details od
+        JOIN
+    pizzas p ON od.pizza_id = p.pizza_id
+        JOIN
+    pizza_types pt ON p.pizza_type_id = pt.pizza_type_id
+GROUP BY pt.pizza_type_id , pt.name
+ORDER BY quant DESC
+LIMIT 5;
+
+-- 6. Join the necessary tables to find the total quantity of each pizza category ordered.
+
+SELECT 
+    pt.category, SUM(od.quantity) AS Total_Qauntity
+FROM
+    order_details od
+        JOIN
+    pizzas p ON od.pizza_id = p.pizza_id
+        JOIN
+    pizza_types pt ON p.pizza_type_id = pt.pizza_type_id
+GROUP BY pt.category;
+
+-- 7. Determine the distribution of orders by hour of the day.
+
+SELECT 
+    HOUR(order_time) AS Hour, COUNT(order_id) AS order_count
+FROM
+    orders
+GROUP BY HOUR(order_time);
+
+-- 8. Find the category-wise distribution of pizzas.
+
+SELECT 
+    category, COUNT(pizza_type_id) AS no_of_pizzas
+FROM
+    pizza_types
+GROUP BY category;
+
+-- 9. Group the orders by date and calculate the average number of pizzas ordered per day.
+
+SELECT 
+    ROUND(AVG(quantity), 0) AS avg_pizza_per_day
+FROM
+    (SELECT 
+        o.order_date, SUM(quantity) AS quantity
+    FROM
+        orders o
+    JOIN order_details od ON o.order_id = od.order_id
+    GROUP BY o.order_date) AS quantity_per_day;
+
+-- 10. Determine the top 3 most ordered pizza types based on revenue.
+
+SELECT 
+    pt.name, ROUND(SUM(od.quantity * p.price), 2) AS revenue
+FROM
+    order_details od
+        JOIN
+    pizzas p ON od.pizza_id = p.pizza_id
+        JOIN
+    pizza_types pt ON p.pizza_type_id = pt.pizza_type_id
+GROUP BY pt.pizza_type_id , pt.name
+ORDER BY revenue DESC
+LIMIT 3;
+
+-- 11. Calculate the percentage contribution of each pizza type to total revenue.
+
+SELECT 
+    pt.category,
+    ROUND((SUM(od.quantity * p.price) / (SELECT 
+                    ROUND(SUM(od.quantity * p.price), 2) AS total_rev
+                FROM
+                    order_details od
+                        JOIN
+                    pizzas p ON od.pizza_id = p.pizza_id)) * 100,
+            2) AS contribution
+FROM
+    order_details od
+        JOIN
+    pizzas p ON od.pizza_id = p.pizza_id
+        JOIN
+    pizza_types pt ON p.pizza_type_id = pt.pizza_type_id
+GROUP BY pt.category;
+
+-- 12. Analyze the cumulative revenue generated over time.
+
+select order_date, sum(revenue)over (order by order_date) as cum_rev from 
+(select o.order_date, sum(od.quantity*p.price) as revenue
+from orders o join order_details od 
+on o.order_id=od.order_id join
+pizzas p on 
+od.pizza_id=p.pizza_id
+group by o.order_date) as sales;
+
+-- 13. Determine the top 3 most ordered pizza types based on revenue for each pizza category.
+
+select * from 
+(select pt.category, pt.pizza_type_id, pt.name, sum(od.quantity*p.price) as rev,
+row_number() over(partition by pt.category order by sum(od.quantity*p.price) desc) as rn
+from order_details od join pizzas p 
+on od.pizza_id=p.pizza_id join 
+pizza_types pt on p.pizza_type_id=pt.pizza_type_id
+group by pt.category, pt.pizza_type_id, pt.name) as row_no
+where rn <=3;
