@@ -59,25 +59,9 @@ This table contains descriptive information about each pizza type and its ingred
 | **ingredients** | `TEXT` | List of ingredients used in the pizza. |
 
 
-## 📊 Business Questions Solved
-
-- Calculated the total number of customer orders.
-- Computed the total revenue generated from pizza sales.
-- Identified the highest-priced pizza.
-- Determined the most commonly ordered pizza size.
-- Found the top 5 most ordered pizza types by quantity.
-- Calculated the total quantity sold for each pizza category.
-- Analyzed the distribution of orders by hour.
-- Determined the distribution of pizza categories.
-- Calculated the average number of pizzas ordered per day.
-- Identified the top 3 pizza types by revenue.
-- Calculated the percentage contribution of each pizza category to total revenue.
-- Analyzed cumulative revenue over time.
-- Ranked the top 3 pizza types by revenue within each category using window functions.
-
 ## 📈 Insights from Analysis
 
 
 
 ## ER Diagram
-
+<img alt="ER Diagram" src="ER_Diagram.png" />
